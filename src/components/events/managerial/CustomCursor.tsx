@@ -31,36 +31,36 @@ const CustomCursor: React.FC = () => {
         ease: "power2.out"
       });
     };
-    
+
     const onMouseDown = () => {
-        gsap.to(follower, { scale: 0.8, duration: 0.1 });
+      gsap.to(follower, { scale: 0.8, duration: 0.1 });
     };
     const onMouseUp = () => {
-        gsap.to(follower, { scale: 1, duration: 0.1 });
+      gsap.to(follower, { scale: 1, duration: 0.1 });
     };
 
     window.addEventListener('mousemove', moveCursor);
     window.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mouseup', onMouseUp);
-    
+
     return () => {
-        window.removeEventListener('mousemove', moveCursor);
-        window.removeEventListener('mousedown', onMouseDown);
-        window.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('mousemove', moveCursor);
+      window.removeEventListener('mousedown', onMouseDown);
+      window.removeEventListener('mouseup', onMouseUp);
     };
   }, []);
 
   return (
     <>
       {/* Small center dot */}
-      <div 
-        ref={cursorRef} 
-        className="fixed top-0 left-0 w-1.5 h-1.5 bg-white rounded-full pointer-events-none z-[100] mix-blend-exclusion"
+      <div
+        ref={cursorRef}
+        className="fixed top-0 left-0 w-2 h-2 bg-white rounded-full pointer-events-none z-[100] shadow-[0_0_10px_rgba(255,255,255,0.8)]"
       />
       {/* Larger trailing ring */}
-      <div 
+      <div
         ref={followerRef}
-        className="fixed top-0 left-0 w-12 h-12 border border-white/40 rounded-full pointer-events-none z-[99]"
+        className="fixed top-0 left-0 w-12 h-12 border-2 border-white/80 rounded-full pointer-events-none z-[99]"
       />
     </>
   );
