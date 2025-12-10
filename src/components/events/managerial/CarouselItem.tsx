@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useTexture, Text } from '@react-three/drei';
 import * as THREE from 'three';
@@ -13,6 +13,7 @@ const vertexShader = `
   
   uniform float uTime;
   uniform float uBendFactor;
+  uniform float uHover; // 0.0 to 1.0
   
   void main() {
     vUv = uv;
@@ -23,21 +24,15 @@ const vertexShader = `
     // Calculate distance from center (0.0) along X axis
     float distFromCenter = worldPosition.x;
     vDist = distFromCenter;
+    
+    // Parabolic bending with Hover interaction (flatten slightly on hover?)
+    float bend = uBendFactor * (1.0 - uHover * 0.5);
+    worldPosition.z -= pow(abs(distFromCenter), 2.0) * bend;
+    
+    // Hover pop effect (move forward slightly)
+    worldPosition.z += uHover * 0.5;
+    
     vWorldPos = worldPosition.xyz;
-    
-    // Parabolic bending: 
-    // We modify the view space or world space Z based on X distance.
-    // The further from center X, the more negative Z (away from camera).
-    
-    // Note: To make it look correct, we modify worldPosition before projection
-    worldPosition.z -= pow(abs(distFromCenter), 2.0) * uBendFactor;
-    
-    // Optional: Rotate slightly to face inward (cylindrical effect)
-    // float rotation = -distFromCenter * 0.1;
-    // float s = sin(rotation);
-    // float c = cos(rotation);
-    // mat2 rot = mat2(c, -s, s, c);
-    // worldPosition.xz = rot * worldPosition.xz; // This creates a more complex cylinder
     
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
   }
@@ -45,33 +40,69 @@ const vertexShader = `
 
 const fragmentShader = `
   uniform sampler2D uTexture;
+  uniform float uTime;
+  uniform float uScannerX;
+  uniform float uHover;
+  
   varying vec2 vUv;
   varying float vDist;
+  varying vec3 vWorldPos;
+
+  float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+  }
 
   void main() {
     vec4 texColor = texture2D(uTexture, vUv);
     
-    // Grayscale calculation (luminance)
+    // Grayscale base
     float gray = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
     vec3 grayColor = vec3(gray);
+
+    float scannerWidth = 0.1;
+    float distToScanner = vWorldPos.x - uScannerX;
     
-    // Calculate distance factor for transitions
-    // 0.0 is center. 
+    // Shredder Effect
+    if (vWorldPos.x < uScannerX) {
+        float noise = rand(vUv * 10.0 + uTime * 2.0);
+        
+        // Progressive Vanish
+        // Calculate how far we are past the scanner
+        float distPastScanner = uScannerX - vWorldPos.x;
+        
+        // Increase shred threshold based on distance
+        // at 0 distance: threshold 0.4 (40% vanished)
+        // at 4 distance: threshold 1.0 (100% vanished)
+        float vanishFactor = 0.4 + (distPastScanner * 0.3);
+        
+        if (noise < vanishFactor) discard; 
+        
+        texColor.rgb = mix(texColor.rgb, vec3(0.0, 1.0, 1.0), 0.5);
+        // Fade opacity of remaining bits
+        texColor.a *= max(0.0, 1.0 - distPastScanner * 0.5); 
+    }
+    
+    // Scanner Glow
+    float glow = 0.0;
+    if (abs(distToScanner) < scannerWidth) {
+       glow = 1.0 - (abs(distToScanner) / scannerWidth);
+       glow = pow(glow, 3.0);
+    }
+    
+    // Distance Fading
     float absDist = abs(vDist);
-    
-    // We want:
-    // 0 to ~2.0: Full Color
-    // 2.0 to ~5.0: Fade to Gray
     float grayMix = smoothstep(1.5, 4.5, absDist);
+    grayMix = mix(grayMix, 0.0, uHover); 
     
-    // We also want to darken it as it goes further away
-    float darken = smoothstep(1.0, 6.0, absDist);
-    float brightness = 1.0 - (darken * 0.7); // Fade to 30% brightness at edges
+    float flatten = smoothstep(1.0, 6.0, absDist);
+    float brightness = 1.0 - (flatten * 0.7);
     
     vec3 finalColor = mix(texColor.rgb, grayColor, grayMix);
+    finalColor += vec3(0.5, 1.0, 1.0) * glow * 2.0; // Cyan Glow
+    finalColor += vec3(0.1) * uHover; 
     finalColor *= brightness;
     
-    gl_FragColor = vec4(finalColor, 1.0);
+    gl_FragColor = vec4(finalColor, texColor.a);
   }
 `;
 
@@ -80,11 +111,14 @@ interface CarouselItemProps {
   image: string;
   title: string;
   subtitle: string;
+  description?: string;
 }
 
-const CarouselItem: React.FC<CarouselItemProps> = ({ image, title, subtitle }) => {
+const CarouselItem: React.FC<CarouselItemProps> = ({ image, title, subtitle, description }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const texture = useTexture(image);
+  const [hovered, setHovered] = useState(false);
+  const hoverValue = useRef(0);
 
   // Memoize uniforms
   const uniforms = useMemo(
@@ -92,49 +126,136 @@ const CarouselItem: React.FC<CarouselItemProps> = ({ image, title, subtitle }) =
       uTexture: { value: texture },
       uTime: { value: 0 },
       uBendFactor: { value: X_AXIS_BEND_STRENGTH },
+      uScannerX: { value: -2.5 },
+      uHover: { value: 0 },
     }),
     [texture]
   );
 
-  useFrame((state) => {
+  const titleGroupRef = useRef<THREE.Group>(null);
+  const descGroupRef = useRef<THREE.Group>(null);
+  const scannerX = -2.5; // Must match shader uniform
+
+  useFrame((state, delta) => {
     if (meshRef.current) {
       const material = meshRef.current.material as THREE.ShaderMaterial;
       material.uniforms.uTime.value = state.clock.getElapsedTime();
+
+      const targetHover = hovered ? 1.0 : 0.0;
+      hoverValue.current = THREE.MathUtils.lerp(hoverValue.current, targetHover, delta * 10);
+      material.uniforms.uHover.value = hoverValue.current;
+
+      // Text Opacity Logic for TITLE ONLY
+      const worldPos = new THREE.Vector3();
+      meshRef.current.getWorldPosition(worldPos);
+      const dist = worldPos.x - scannerX;
+
+      // Title fades out as it enters scanner range
+      // Range: Starts fading at x = -1.0 relative to scanner (before hitting it)
+      // Fully invisible at x = 0.0 (center hits scanner)
+      const titleOpacity = THREE.MathUtils.clamp((dist - 0.0) / 1.5, 0, 1);
+
+      if (titleGroupRef.current) {
+        titleGroupRef.current.children.forEach((child: any) => {
+          // Drei Text uses fillOpacity/outlineOpacity on the component, 
+          // but here we are accessing the underlying object.
+          // Usually it's a Mesh with a custom ShaderMaterial or BasicMaterial derived.
+          // Or simpler: set visible based on opacity threshold or strict sync.
+          // Accessing .material.opacity works if transparent=true.
+          if (child.material) {
+            child.material.transparent = true;
+            child.material.opacity = titleOpacity;
+            // Also outline opacity if exposed on material? 
+            // Troika-text materials have uniform 'uOutlineOpacity'?
+            // Let's rely on standard opacity for now.
+          }
+          // Fallback for sync
+          child.visible = titleOpacity > 0.05;
+        });
+      }
+
+      // Description Logic: Fade in ONLY after passing scanner (Left side)
+      // dist = worldPos.x - scannerX
+      // If dist > 0 (Right side), opacity should be 0.
+      // If dist < 0 (Left side), opacity increases.
+      const descOpacity = THREE.MathUtils.clamp((0.0 - dist) / 1.5, 0, 1);
+
+      if (descGroupRef.current) {
+        descGroupRef.current.visible = true;
+        descGroupRef.current.children.forEach((child: any) => {
+          if (child.material) {
+            child.material.transparent = true;
+            child.material.opacity = descOpacity;
+          }
+          child.visible = descOpacity > 0.05;
+        });
+      }
+
+      // Description is statically behind, revealed by shader discard
     }
   });
 
   return (
     <group>
-      <mesh ref={meshRef}>
+      <mesh
+        ref={meshRef}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+      >
         <planeGeometry args={[PLANE_WIDTH, PLANE_HEIGHT, 64, 64]} />
         <shaderMaterial
           uniforms={uniforms}
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
           side={THREE.DoubleSide}
+          transparent={true}
         />
       </mesh>
 
-      {/* 
-        Text Overlay 
-        We render this separate from the curved plane. 
-        We use a trick: standard materials don't curve with the custom shader of the plane.
-        So we place it slightly in front.
-        For a truly curved text, we'd need to bend the text geometry too, but standard billboard text works well for this effect
-        as long as we fade it out when it moves to the side.
-      */}
-      <group position={[0, 0, 0.2]}>
+      {/* Title Overlay (Standard) */}
+      <group position={[0, 0, 0.2]} ref={titleGroupRef}>
         <Text
-          fontSize={0.6}
+          fontSize={0.8}
           anchorX="center"
-          anchorY="middle"
+          anchorY="bottom"
+          position={[0, 0.1, 0]}
           color="white"
-          letterSpacing={-0.02}
+          characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+"
+          outlineWidth={0.05}
+          outlineColor="black"
         >
           {title}
           <meshBasicMaterial toneMapped={false} />
         </Text>
-        {/* Only show title for now to keep it clean like reference */}
+        <Text
+          fontSize={0.4}
+          anchorX="center"
+          anchorY="top"
+          position={[0, -0.1, 0]}
+          color="#f0f0f0"
+          outlineWidth={0.02}
+          outlineColor="black"
+        >
+          {subtitle}
+          <meshBasicMaterial toneMapped={false} />
+        </Text>
+      </group>
+
+      {/* Description Reveal (Behind the card) */}
+      <group position={[0, 0, -0.5]} ref={descGroupRef}>
+        <Text
+          fontSize={0.28} // Adjusted for 5.5 width
+          maxWidth={PLANE_WIDTH * 0.85}
+          anchorX="center"
+          anchorY="middle"
+          textAlign="center"
+          color="white"
+          outlineWidth={0.05}
+          outlineColor="black"
+        >
+          {description}
+          <meshBasicMaterial toneMapped={false} />
+        </Text>
       </group>
     </group>
   );

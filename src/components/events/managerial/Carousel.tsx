@@ -139,6 +139,7 @@ const WrappedItem = ({ item, index, scrollCurrent, totalItems }: any) => {
         image={item.image}
         title={item.title}
         subtitle={item.subtitle}
+        description={item.description}
       />
     </group>
   );
