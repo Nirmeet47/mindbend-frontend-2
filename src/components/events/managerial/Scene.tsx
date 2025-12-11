@@ -4,7 +4,7 @@ import { Preload } from '@react-three/drei';
 import Carousel from './Carousel';
 import ParticleSystem from './Particles';
 
-const Scene: React.FC = () => {
+const Scene: React.FC<{ ContextBridge: React.FC<{ children: React.ReactNode }> }> = ({ ContextBridge }) => {
   return (
     <Canvas
       camera={{ position: [0, 0, 10], fov: 35 }}
@@ -15,20 +15,22 @@ const Scene: React.FC = () => {
       }}
       dpr={[1, 2]} // Handle high DPI screens
     >
-      <color attach="background" args={['#000000']} />
+      <ContextBridge>
+        <color attach="background" args={['#000000']} />
 
-      {/* Lighting - subtle, mostly for standard materials if used */}
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
+        {/* Lighting - subtle, mostly for standard materials if used */}
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} intensity={1} />
 
-      {/* Background Particles */}
-      <ParticleSystem />
+        {/* Background Particles */}
+        <ParticleSystem />
 
-      {/* Main Content */}
-      <Suspense fallback={null}>
-        <Carousel />
-        <Preload all />
-      </Suspense>
+        {/* Main Content */}
+        <Suspense fallback={null}>
+          <Carousel />
+          <Preload all />
+        </Suspense>
+      </ContextBridge>
     </Canvas>
   );
 };

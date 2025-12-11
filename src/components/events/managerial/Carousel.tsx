@@ -140,6 +140,7 @@ const WrappedItem = ({ item, index, scrollCurrent, totalItems }: any) => {
         title={item.title}
         subtitle={item.subtitle}
         description={item.description}
+        eventId={item.id}
       />
     </group>
   );

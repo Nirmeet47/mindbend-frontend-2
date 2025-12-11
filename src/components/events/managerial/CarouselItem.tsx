@@ -1,8 +1,10 @@
 import React, { useRef, useMemo, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { useTexture, Text } from '@react-three/drei';
+import { useFrame, useThree } from '@react-three/fiber';
+import { useTexture, Text, useCursor } from '@react-three/drei';
 import * as THREE from 'three';
 import { PLANE_WIDTH, PLANE_HEIGHT, X_AXIS_BEND_STRENGTH } from '@/components/events/constants';
+import { useRouter } from 'next/navigation';
+import { useTransition } from './TransitionContext';
 
 // --- Custom Shaders ---
 
@@ -112,13 +114,90 @@ interface CarouselItemProps {
   title: string;
   subtitle: string;
   description?: string;
+  eventId?: string;
 }
 
-const CarouselItem: React.FC<CarouselItemProps> = ({ image, title, subtitle, description }) => {
+const CarouselItem: React.FC<CarouselItemProps> = ({ image, title, subtitle, description, eventId }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const texture = useTexture(image);
   const [hovered, setHovered] = useState(false);
   const hoverValue = useRef(0);
+  const router = useRouter();
+  const { setActiveItem, setIsTransitioning } = useTransition();
+  const { camera, gl } = useThree();
+
+  useCursor(hovered);
+
+  const handleClick = () => {
+    if (!meshRef.current) return;
+
+    // 1. Calculate screen position
+    const vector = new THREE.Vector3();
+    meshRef.current.getWorldPosition(vector);
+
+    // Project to 2D screen space
+    vector.project(camera);
+
+    // Convert to CSS coordinates
+    // vector.x is -1 to 1, vector.y is -1 to 1
+    const x = (vector.x * .5 + .5) * gl.domElement.clientWidth;
+    const y = (-(vector.y * .5) + .5) * gl.domElement.clientHeight;
+
+    // Approximate width/height based on distance and plane size
+    // For a more accurate rect, we should project the corners of the plane
+    const corners = [
+      new THREE.Vector3(-PLANE_WIDTH / 2, PLANE_HEIGHT / 2, 0),
+      new THREE.Vector3(PLANE_WIDTH / 2, PLANE_HEIGHT / 2, 0),
+      new THREE.Vector3(PLANE_WIDTH / 2, -PLANE_HEIGHT / 2, 0),
+      new THREE.Vector3(-PLANE_WIDTH / 2, -PLANE_HEIGHT / 2, 0),
+    ];
+
+    const screenCorners = corners.map(corner => {
+      // Clone to avoid modifying original corners if reused (though here created fresh)
+      const v = corner.clone();
+      v.applyMatrix4(meshRef.current!.matrixWorld);
+      v.project(camera);
+      return {
+        x: (v.x * .5 + .5) * gl.domElement.clientWidth,
+        y: (-(v.y * .5) + .5) * gl.domElement.clientHeight
+      };
+    });
+
+    const minX = Math.min(...screenCorners.map(c => c.x));
+    const maxX = Math.max(...screenCorners.map(c => c.x));
+    const minY = Math.min(...screenCorners.map(c => c.y));
+    const maxY = Math.max(...screenCorners.map(c => c.y));
+
+    // Create a DOMRect
+    const rect = {
+      top: minY,
+      left: minX,
+      width: maxX - minX,
+      height: maxY - minY,
+      bottom: maxY,
+      right: maxX,
+      x: minX,
+      y: minY,
+      toJSON: () => { }
+    } as DOMRect;
+
+    // 2. Set Context
+    setActiveItem({
+      id: eventId || title,
+      image,
+      title,
+      subtitle,
+      rect
+    });
+    setIsTransitioning(true);
+
+    // 3. Navigate
+    const slug = eventId || title.toLowerCase().replace(/\s+/g, '-');
+    // Small delay to let the overlay appear
+    setTimeout(() => {
+      router.push(`/events/managerial/${slug}`);
+    }, 50);
+  };
 
   // Memoize uniforms
   const uniforms = useMemo(
@@ -201,6 +280,7 @@ const CarouselItem: React.FC<CarouselItemProps> = ({ image, title, subtitle, des
         ref={meshRef}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
+        onClick={handleClick}
       >
         <planeGeometry args={[PLANE_WIDTH, PLANE_HEIGHT, 64, 64]} />
         <shaderMaterial
