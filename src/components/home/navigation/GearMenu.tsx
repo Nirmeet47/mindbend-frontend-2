@@ -41,7 +41,7 @@ const FuturisticGearAnimation: React.FC = () => {
     // Check if click is within any clickable area
     for (const area of clickableAreas.current) {
       const distance = Math.sqrt((x - area.x) ** 2 + (y - area.y) ** 2);
-      if (distance <= area.radius + 25) { // Add some padding for easier clicking
+      if (distance <= area.radius + 32) { // Add some padding for easier clicking
         router.push(area.url);
         return;
       }
@@ -62,7 +62,7 @@ const FuturisticGearAnimation: React.FC = () => {
     let newHoveredNode: string | null = null;
     for (const area of clickableAreas.current) {
       const distance = Math.sqrt((x - area.x) ** 2 + (y - area.y) ** 2);
-      if (distance <= area.radius + 25) {
+      if (distance <= area.radius + 32) {
         newHoveredNode = area.label;
         break;
       }
@@ -187,7 +187,7 @@ const FuturisticGearAnimation: React.FC = () => {
       isHovered: boolean = false
     ) => {
       // Hover effects
-      const hoverScale = isHovered ? 1.2 : 1;
+      const hoverScale = isHovered ? 1.1 : 1;
       const hoverRadius = radius * hoverScale;
       const glowIntensity = isHovered ? 0.8 : 0.3;
       
@@ -233,8 +233,8 @@ const FuturisticGearAnimation: React.FC = () => {
       // Enhanced text styling for hover
       ctx.fillStyle = isHovered ? '#00ff88' : '#ffffff';
       ctx.font = isSmall 
-        ? `bold ${16 * hoverScale}px Arial` 
-        : `bold ${22 * hoverScale}px Arial`;
+        ? `bold ${14 * hoverScale}px Arial` 
+        : `bold ${20 * hoverScale}px Arial`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       
@@ -244,7 +244,7 @@ const FuturisticGearAnimation: React.FC = () => {
         ctx.shadowBlur = 10;
       }
       
-      ctx.fillText(label, x, y + hoverRadius + (isSmall ? 18 : 25) * hoverScale);
+      ctx.fillText(label, x, y + hoverRadius + (isSmall ? 16 : 21) * hoverScale);
       
       // Reset shadow
       ctx.shadowBlur = 0;
@@ -270,11 +270,6 @@ const FuturisticGearAnimation: React.FC = () => {
       rotation += 0.008;
 
       const orbits = [
-        {
-          radius: Math.min(canvas.width, canvas.height) * 0.165,
-          speed: 0.5,
-          nodes: [{ angle: 0, label: 'CONTACT', isSmall: true }],
-        },
         {
           radius: Math.min(canvas.width, canvas.height) * 0.26,
           speed: -0.3,
