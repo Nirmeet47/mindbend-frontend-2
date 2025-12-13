@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
-const FuturisticGearAnimation: React.FC = () => {
+interface FuturisticGearAnimationProps {
+  onClose?: () => void;
+}
+
+const FuturisticGearAnimation: React.FC<FuturisticGearAnimationProps> = ({ onClose }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const router = useRouter();
   
@@ -378,9 +382,48 @@ const FuturisticGearAnimation: React.FC = () => {
     };
   }, [handleCanvasClick, handleCanvasMouseMove]);
 
+  // Add escape key handler
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && onClose) {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [onClose]);
+
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden">
       <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full" />
+      
+      {/* Close Button */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 z-10 p-3 bg-gray-800/90 backdrop-blur-xl border border-gray-600/50 rounded-xl hover:border-red-400/60 transition-all duration-300 group"
+          style={{
+            backdropFilter: 'blur(16px)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }}
+        >
+          <div className="relative w-6 h-6">
+            {/* X Icon */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-4 h-0.5 bg-gray-400 group-hover:bg-red-400 transition-colors duration-300 transform rotate-45" />
+              <div className="absolute w-4 h-0.5 bg-gray-400 group-hover:bg-red-400 transition-colors duration-300 transform -rotate-45" />
+            </div>
+          </div>
+        </button>
+      )}
+      
+      {/* Instructions */}
+      {onClose && (
+        <div className="absolute bottom-6 left-6 z-10 px-4 py-2 bg-gray-800/90 backdrop-blur-xl border border-gray-600/50 rounded-lg">
+          <p className="text-sm text-gray-300">Press <span className="text-cyan-400 font-semibold">ESC</span> to return</p>
+        </div>
+      )}
     </div>
   );
 };

@@ -666,6 +666,7 @@ const AboutSection: React.FC = () => {
                 >
                   SYMBIONT
                 </h1>
+                {/* <img src="mindbendTheme.png" height={276} width={420} alt="" className="mx-auto" /> */}
                 
                 <p 
                   ref={subtitleRef}
