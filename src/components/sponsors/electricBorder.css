@@ -1,0 +1,101 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* OUTER WRAPPER */
+.electric-wrapper {
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+}
+
+/* INNER - Contains SVG border & children */
+.electric-inner {
+  position: relative;
+  padding: 40px;
+}
+
+/* CENTERED CONTENT (Card) */
+.electric-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10; /* above SVG */
+}
+
+/* SVG BASE */
+svg {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* yellow stroke animation */
+.yellow {
+  width: 110%;
+  stroke-dasharray: 300;
+  stroke-dashoffset: 1000;
+  animation: dash 1s linear infinite alternate-reverse;
+}
+
+/* yellow glow */
+.yellow-glow {
+  filter: brightness(1.7) blur(2px);
+}
+
+/* blue */
+.blue {
+  width: 110%;
+  stroke-dasharray: 400;
+  stroke-dashoffset: 1000;
+  animation: dash 1.2s linear infinite alternate-reverse;
+}
+
+/* stroke animation */
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Positioning for each SVG (kept exactly from your CSS) */
+#y1 { top: -115%; left: -5%; filter: blur(.5px); }
+#y2 { width: 120%; left: -10%; top: -155%; }
+#b1 { left: -5%; top: -125%; }
+#b2 { left: -10%; top: -165%; width: 120%; }
+
+/* PARTICLE DOTS */
+.part {
+  width: 3px;
+  height: 3px;
+  border-radius: 5px;
+  background-color: rgb(183, 226, 255);
+  position: absolute;
+  filter: blur(1px);
+  z-index: 5;
+}
+
+/* dot animations */
+#part1 { animation: dot1 1.5s infinite; }
+#part2 { animation: dot2 1.6s infinite; }
+#part3 { animation: dot3 1.5s infinite; }
+#part4 { animation: dot4 1.5s infinite; }
+
+@keyframes dot1 {
+  from { bottom: 0%; left: 10%; opacity: 1; }
+  to   { bottom: -30%; left: 0%; opacity: 0; }
+}
+@keyframes dot2 {
+  from { top: 0%; left: 30%; opacity: 1; }
+  to   { top: -30%; left: 40%; opacity: 0; }
+}
+@keyframes dot3 {
+  from { top: 0%; left: 80%; opacity: 1; }
+  to   { top: -30%; left: 80%; opacity: 0; }
+}
+@keyframes dot4 {
+  from { bottom: 20%; left: 100%; opacity: 1; }
+  to   { bottom: 30%; left: 120%; opacity: 0; }
+}
