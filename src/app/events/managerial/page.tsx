@@ -4,6 +4,7 @@ import ManagerialBackground from '@/components/managerial/ManagerialBackground';
 import EventCard from '@/components/managerial/EventCard';
 import { IMAGES } from '@/components/events/constants'; // Import real data
 import Link from 'next/link';
+import SymbolFalling from '@/components/managerial/SymbolFalling';
 
 // Helper to generate slug consistent with the detail page logic
 const generateSlug = (item: any) => {
@@ -15,7 +16,14 @@ export default function ManagerialPage() {
         <div className="relative w-full min-h-screen text-white overflow-x-hidden selection:bg-blue-500/30">
             {/* Fixed Background */}
             <div className="fixed inset-0 z-0">
-                <ManagerialBackground />
+                {/* <ManagerialBackground /> */}
+                <SymbolFalling
+                    density={350}
+                    backgroundColor="#000000"
+                    fontSize={25}
+                    speed={1}
+                    opacity={0.8}
+                />
             </div>
 
             {/* Scrollable Content */}
@@ -31,8 +39,8 @@ export default function ManagerialPage() {
                 </div>
 
                 {/* Event Grid */}
-                <div className="container mx-auto px-4 pb-20">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="container mx-auto px-18 pb-20">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-20 gap-y-6">
                         {IMAGES.map((event, index) => {
                             const slug = generateSlug(event);
                             return (
