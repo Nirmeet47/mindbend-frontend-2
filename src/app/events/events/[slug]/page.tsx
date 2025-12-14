@@ -7,10 +7,10 @@ import { IMAGES } from '@/components/events/constants';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { useRef, useEffect } from 'react';
-import { useTransition } from '@/components/events/managerial/TransitionContext';
+import { useTransition } from '@/components/events/temp/TransitionContext';
 
 // Lazy load the background scene
-const BackgroundScene = dynamic(() => import('@/components/events/managerial/BackgroundScene'), {
+const BackgroundScene = dynamic(() => import('@/components/events/temp/BackgroundScene'), {
   ssr: false,
 });
 

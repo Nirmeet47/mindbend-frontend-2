@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { LayoutGroup } from 'framer-motion';
-import { TransitionProvider } from '@/components/events/managerial/TransitionContext';
-import TransitionOverlay from '@/components/events/managerial/TransitionOverlay';
-import CustomCursor from '@/components/events/managerial/CustomCursor';
+import { TransitionProvider } from '@/components/events/temp/TransitionContext';
+import TransitionOverlay from '@/components/events/temp/TransitionOverlay';
+import CustomCursor from '@/components/events/temp/CustomCursor';
 
 export default function ManagerialLayout({
     children,
