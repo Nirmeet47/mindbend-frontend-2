@@ -6,6 +6,11 @@ import AboutSection from '@/components/home/AboutSection';
 import TimerSection from '@/components/home/TimerSection';
 import MechanicalTransition from '@/components/home/navigation/MechanicalTransition';
 import FuturisticGearAnimation from '@/components/home/navigation/GearMenu';
+// User's home page components
+import HorizontalStrips from '@/components/home/guest/HorizontalStrips';
+import Committee from '@/components/home/other/Committee';
+import LatestPosts from '@/components/home/other/LatestPosts';
+import Footer from '@/components/home/footer/Footer';
 
 export default function Home() {
   const [showGearMenu, setShowGearMenu] = useState(false);
@@ -32,11 +37,17 @@ export default function Home() {
 
   return (
     <>
+      {/* Home Page Content - Always visible */}
+      <HorizontalStrips />
+      <Committee />
+      <LatestPosts />
+      <Footer />
+
       {/* Always show navigation button when not in gear menu */}
       {!showGearMenu && (
         <NavigationButton onClick={handleNavigation} />
       )}
-      
+
       {/* Main content area */}
       {showGearMenu ? (
         <FuturisticGearAnimation onClose={handleCloseGearMenu} />
@@ -46,7 +57,7 @@ export default function Home() {
           <TimerSection />
         </>
       )}
-      
+
       {/* Transition overlay */}
       <MechanicalTransition
         isActive={showTransition}

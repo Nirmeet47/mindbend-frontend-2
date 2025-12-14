@@ -1,0 +1,536 @@
+/* Reset CSS backgrounds */
+.committee-section {
+    width: 100%;
+    /* background: #050505; REMOVED - uses Shared 3D BG */
+    position: relative;
+    padding: 60px 30px;
+    overflow: hidden;
+    isolation: isolate;
+    /* Create new stacking context */
+}
+
+/* Clear CSS pseudo-elements for background */
+.committee-section::before,
+.committee-section::after {
+    display: none !important;
+}
+
+.committee-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+    /* Force above background */
+    pointer-events: none;
+    /* Let clicks pass through container gaps if needed */
+}
+
+/* Re-enable pointer events for interactive children */
+.committee-container>* {
+    pointer-events: auto;
+}
+
+/* Header */
+.committee-header {
+    text-align: center;
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+
+.header-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+}
+
+.committee-title {
+    font-family: var(--font-orbitron);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 12px;
+    margin: 0;
+    position: relative;
+    padding: 10px 40px;
+}
+
+/* Typing cursor animation style */
+.committee-title::after {
+    content: '_';
+    display: inline-block;
+    color: #0096ff;
+    animation: blinkCursor 1s infinite;
+    margin-left: 10px;
+    text-shadow: 0 0 10px #0096ff;
+}
+
+/* Use the glitch/typewriter effect but with cursor */
+.committee-title::before {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0%;
+    height: 100%;
+    color: #fff;
+    overflow: hidden;
+    border-right: 2px solid #0096ff;
+    animation: typeWriter 6s steps(30) infinite alternate;
+    white-space: nowrap;
+    filter: drop-shadow(0 0 8px #0096ff);
+    opacity: 0.9;
+}
+
+@keyframes blinkCursor {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+@keyframes typeWriter {
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+
+/* Grid Layout */
+.hexagon-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 10px 0;
+}
+
+.hex-row {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+/* Card Sizes */
+.hex-wrapper {
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* opacity: 0; REMOVED to ensure visibility */
+    transform: translateY(0);
+    /* Reset transform */
+}
+
+.hex-wrapper.in-view {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Staggered Animation Delays */
+.hex-row.chairperson-row .hex-wrapper {
+    animation-delay: 0.1s;
+}
+
+.hex-row.co-chairs-row .hex-wrapper:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.hex-row.co-chairs-row .hex-wrapper:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.hex-row.co-chairs-row .hex-wrapper:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.hex-row.co-chairs-row .hex-wrapper:nth-child(4) {
+    animation-delay: 0.5s;
+}
+
+.hex-row.ccrs-row .hex-wrapper {
+    animation-delay: 0.6s;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hex-large {
+    width: 280px;
+}
+
+.hex-medium {
+    width: 220px;
+}
+
+.hex-regular {
+    width: 200px;
+}
+
+.hex-wrapper:hover {
+    transform: translateY(-6px);
+    z-index: 10;
+}
+
+/* Revolutionary Card Design with Glass Morphism & Mesh Gradient */
+.hex-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background:
+        /* Animated mesh gradient */
+        conic-gradient(from 180deg at 30% 40%,
+            rgba(var(--member-color-rgb, 59, 130, 246), 0.3) 0deg,
+            transparent 60deg,
+            rgba(var(--member-color-rgb, 59, 130, 246), 0.2) 120deg,
+            transparent 180deg,
+            rgba(var(--member-color-rgb, 59, 130, 246), 0.25) 240deg,
+            transparent 300deg,
+            rgba(var(--member-color-rgb, 59, 130, 246), 0.3) 360deg),
+        /* Diagonal stripes */
+        repeating-linear-gradient(45deg,
+            rgba(255, 255, 255, 0.02) 0px,
+            rgba(255, 255, 255, 0.02) 2px,
+            transparent 2px,
+            transparent 12px),
+        /* Glass base */
+        linear-gradient(135deg,
+            rgba(20, 30, 50, 0.7) 0%,
+            rgba(10, 20, 40, 0.85) 50%,
+            rgba(20, 30, 50, 0.7) 100%);
+    border: 3px solid rgba(100, 150, 200, 0.4);
+    clip-path: polygon(0 0,
+            calc(100% - 20px) 0,
+            100% 20px,
+            100% 100%,
+            20px 100%,
+            0 calc(100% - 20px));
+    overflow: visible;
+    backdrop-filter: blur(20px) saturate(180%);
+    transition: all 0.4s ease;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(var(--member-color-rgb, 59, 130, 246), 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Shimmer Effect Overlay */
+.hex-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+    pointer-events: none;
+}
+
+.hex-wrapper:hover .hex-card::before {
+    transform: translateX(100%);
+}
+
+.hex-wrapper:hover .hex-card {
+    border-color: var(--member-color, #3b82f6);
+    animation: borderPulse 2s ease-in-out infinite, backgroundShift 4s ease-in-out infinite;
+    background:
+        /* Intensified mesh */
+        conic-gradient(from 180deg at 30% 40%,
+            rgba(var(--member-color-rgb, 59, 130, 246), 0.5) 0deg,
+            transparent 60deg,
+            rgba(var(--member-color-rgb, 59, 130, 246), 0.4) 120deg,
+            transparent 180deg,
+            rgba(var(--member-color-rgb, 59, 130, 246), 0.45) 240deg,
+            transparent 300deg,
+            rgba(var(--member-color-rgb, 59, 130, 246), 0.5) 360deg),
+        /* Diagonal stripes */
+        repeating-linear-gradient(45deg,
+            rgba(255, 255, 255, 0.03) 0px,
+            rgba(255, 255, 255, 0.03) 2px,
+            transparent 2px,
+            transparent 12px),
+        /* Enhanced glass */
+        linear-gradient(135deg,
+            rgba(20, 30, 50, 0.85) 0%,
+            rgba(10, 20, 40, 0.95) 50%,
+            rgba(20, 30, 50, 0.85) 100%);
+    backdrop-filter: blur(25px) saturate(200%);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(var(--member-color-rgb, 59, 130, 246), 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+@keyframes borderPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 12px 40px rgba(0, 0, 0, 0.5),
+            0 0 40px rgba(var(--member-color-rgb, 59, 130, 246), 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    50% {
+        box-shadow:
+            0 12px 40px rgba(0, 0, 0, 0.5),
+            0 0 60px rgba(var(--member-color-rgb, 59, 130, 246), 0.6),
+            0 0 80px rgba(var(--member-color-rgb, 59, 130, 246), 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    }
+}
+
+@keyframes backgroundShift {
+
+    0%,
+    100% {
+        filter: hue-rotate(0deg) brightness(1);
+    }
+
+    50% {
+        filter: hue-rotate(10deg) brightness(1.1);
+    }
+}
+
+/* Top Border Accent with Gradient */
+.hex-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 20px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, var(--member-color, #3b82f6) 30%, var(--member-color, #3b82f6) 70%, transparent 100%);
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.hex-wrapper:hover .hex-card::before {
+    opacity: 1;
+}
+
+/* Corner Cut Accent Fill */
+.hex-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: var(--member-color, #3b82f6);
+    opacity: 0.15;
+    clip-path: polygon(100% 0, 100% 100%, 0 0);
+    transition: opacity 0.3s ease;
+}
+
+.hex-wrapper:hover .hex-card::after {
+    opacity: 0.3;
+}
+
+.hex-border {
+    width: 100%;
+    height: 100%;
+    padding: 30px 20px;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+}
+
+/* Decorative Line Below Top Border */
+.hex-border::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 20px;
+    right: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--member-color, #3b82f6) 0%, transparent 100%);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.hex-wrapper:hover .hex-border::after {
+    opacity: 0.8;
+}
+
+/* Floating Particle Effect - Spawns All Over Card */
+.hex-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 10% 90%, var(--member-color, #3b82f6) 2px, transparent 2px),
+        radial-gradient(circle at 25% 85%, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+        radial-gradient(circle at 40% 95%, var(--member-color, #3b82f6) 1px, transparent 1px),
+        /* ... more dots ... */
+        radial-gradient(circle at 90% 90%, rgba(255, 255, 255, 0.6) 1px, transparent 1px);
+    background-size: 100% 100%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hex-wrapper:hover .hex-border::before {
+    opacity: 1;
+    animation: particleRise 4s ease-out infinite;
+}
+
+@keyframes particleRise {
+    0% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Typography and Footer - Standard */
+.hex-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hex-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-family: 'Orbitron', sans-serif;
+}
+
+.hex-wrapper:hover .hex-name {
+    color: var(--member-color, #3b82f6);
+}
+
+.hex-role {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+    font-weight: 500;
+    position: relative;
+    padding-top: 10px;
+    font-family: 'Courier New', monospace;
+}
+
+.hex-role::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--member-color, #3b82f6) 50%, transparent 100%);
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.hex-wrapper:hover .hex-role::before {
+    width: 45px;
+    opacity: 1;
+}
+
+.committee-footer {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.committee-footer p {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.8rem;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .hex-row {
+        gap: 18px;
+    }
+
+    .hex-large {
+        width: 260px;
+    }
+
+    .hex-medium {
+        width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .committee-section {
+        padding: 40px 15px;
+    }
+
+    .committee-header {
+        flex-direction: column;
+        margin-bottom: 35px;
+    }
+
+    .hexagon-grid {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hex-row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hex-large,
+    .hex-medium,
+    .hex-regular {
+        width: 100%;
+        max-width: 260px;
+    }
+}

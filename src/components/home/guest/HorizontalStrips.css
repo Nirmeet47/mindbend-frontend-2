@@ -1,0 +1,656 @@
+.horizontal-strips-section {
+    width: 100%;
+    background: #0a0e27;
+    /* Updated to THEME_NAVY for seamless integration */
+    padding: 0;
+    /* Removed padding to let strips touch adjacent sections */
+    overflow: hidden;
+    position: relative;
+    /* Core background color only, canvas handles scenery */
+}
+
+/* Strip container must be relative to hold the absolute canvas */
+.horizontal-strip {
+    width: 100%;
+    margin-bottom: 0px;
+    /* Seamless join */
+    position: relative;
+    padding: 80px 0;
+    /* Balanced padding */
+    z-index: 1;
+    overflow: hidden;
+    /* Remove CSS backgrounds from previous steps */
+    background: none !important;
+    border: none;
+    /* No dividers */
+}
+
+/* Ensure no pseudo-element backgrounds exist */
+.horizontal-strip::before,
+.horizontal-strip::after {
+    display: none !important;
+}
+
+
+/* KEEP TYPOGRAPHY EFFECTS BELOW */
+
+.horizontal-strip:last-child {
+    margin-bottom: 0;
+}
+
+.strip-header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 0 20px;
+    mix-blend-mode: normal;
+    /* Normal mode so we see text clearly on top of canvas */
+    perspective: 1000px;
+    position: relative;
+    z-index: 2;
+    /* Header above background */
+}
+
+/* Base Title Configuration */
+.strip-title {
+    font-family: var(--font-orbitron);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 12px;
+    position: relative;
+    display: inline-block;
+    color: transparent;
+    /* Text often handled by effects */
+    padding: 10px 40px;
+}
+
+/* =========================================
+   EFFECT 1: HOLOGRAPHIC BLUEPRINT (Workshops)
+   ========================================= */
+.strip-title.effect-scanline {
+    color: rgba(0, 217, 255, 0.2);
+    /* Higher contrast */
+    -webkit-text-stroke: 1px #00d9ff;
+    text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+}
+
+.strip-title.effect-scanline::before {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg,
+            transparent 0%,
+            rgba(0, 217, 255, 0.4) 40%,
+            #ffffff 50%,
+            rgba(0, 217, 255, 0.4) 60%,
+            transparent 100%);
+    background-size: 100% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: holoScan 3s linear infinite;
+    filter: drop-shadow(0 0 8px rgba(0, 217, 255, 0.9));
+}
+
+.strip-title.effect-scanline::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 2px;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    opacity: 0.8;
+    mix-blend-mode: overlay;
+    clip-path: inset(0 0 0 0);
+    animation: holoGlitch 2s infinite steps(5);
+}
+
+@keyframes holoScan {
+    0% {
+        background-position: 0% 100%;
+    }
+
+    100% {
+        background-position: 0% -100%;
+    }
+}
+
+@keyframes holoGlitch {
+    0% {
+        clip-path: inset(10% 0 80% 0);
+        transform: translate(-2px, 1px);
+    }
+
+    20% {
+        clip-path: inset(80% 0 10% 0);
+        transform: translate(2px, -1px);
+    }
+
+    40% {
+        clip-path: inset(40% 0 50% 0);
+        transform: translate(-2px, 2px);
+    }
+
+    60% {
+        clip-path: inset(0 0 0 0);
+        transform: translate(0, 0);
+    }
+
+    100% {
+        clip-path: inset(0 0 0 0);
+        transform: translate(0, 0);
+    }
+}
+
+/* =========================================
+   EFFECT 2: ELECTRIC ARC FLICKER (Sponsors)
+   ========================================= */
+.strip-title.effect-flicker {
+    color: #fff;
+    /* Brighter base */
+    text-shadow:
+        0 0 10px #0066ff,
+        0 0 20px #0066ff,
+        0 0 40px #0066ff;
+    animation: electricSurge 3s infinite;
+    /* Faster surge */
+}
+
+/* The Lightning Bolt / Surge Line */
+.strip-title.effect-flicker::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    border: 3px solid transparent;
+    /* Thicker border */
+    border-top-color: #00d9ff;
+    border-bottom-color: #00d9ff;
+    clip-path: polygon(0 0, 100% 0, 100% 10%, 0 10%, 0 90%, 100% 90%, 100% 100%, 0 100%);
+    animation: arcRotate 1s linear infinite, arcFlash 0.1s infinite;
+    filter: drop-shadow(0 0 10px #00d9ff);
+}
+
+.strip-title.effect-flicker::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: transparent;
+    -webkit-text-stroke: 2px #00d9ff;
+    opacity: 0.5;
+    transform: scale(1.1);
+    animation: ghostPulse 0.1s infinite alternate;
+}
+
+@keyframes electricSurge {
+
+    0%,
+    100% {
+        opacity: 1;
+        filter: brightness(1.2);
+    }
+
+    45% {
+        opacity: 1;
+        filter: brightness(1.4);
+    }
+
+    46% {
+        opacity: 0.8;
+        filter: brightness(0.9);
+    }
+
+    50% {
+        opacity: 1;
+        filter: brightness(1.2);
+    }
+}
+
+@keyframes arcRotate {
+    0% {
+        clip-path: polygon(0 0, 20% 0, 20% 100%, 0 100%);
+    }
+
+    50% {
+        clip-path: polygon(40% 0, 60% 0, 60% 100%, 40% 100%);
+    }
+
+    100% {
+        clip-path: polygon(80% 0, 100% 0, 100% 100%, 80% 100%);
+    }
+}
+
+@keyframes arcFlash {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
+/* =========================================
+   EFFECT 3: CYBER STREAM (Lectures)
+   ========================================= */
+.strip-title.effect-matrix {
+    color: rgba(255, 255, 255, 0.2);
+    -webkit-text-stroke: 1px #00BFFF;
+    text-shadow: 0 0 10px #00BFFF;
+}
+
+.strip-title.effect-matrix::before {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(45deg,
+            #000 0px,
+            #000 2px,
+            #00BFFF 4px,
+            #000 6px);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: streamScroll 5s linear infinite;
+    /* Faster scroll */
+    filter: drop-shadow(0 0 5px #00BFFF);
+}
+
+.strip-title.effect-matrix::after {
+    content: '_';
+    position: absolute;
+    right: -20px;
+    bottom: 15px;
+    color: #00BFFF;
+    font-size: 1.2em;
+    /* Bigger cursor */
+    animation: blink 0.5s steps(2) infinite;
+    /* Faster blink */
+}
+
+@keyframes streamScroll {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+
+/* COMMON CONTAINER STYLES */
+.strip-container {
+    width: 100%;
+    overflow: hidden;
+    /* Needed for track scrolling */
+    position: relative;
+    padding: 90px 0;
+    /* ID: 947 - Increased to 90px to fully contain 60px shadows + movement */
+    z-index: 2;
+}
+
+.strip-track {
+    display: flex;
+    gap: 30px;
+    width: fit-content;
+}
+
+.scroll-left {
+    animation: scrollLeft 30s linear infinite;
+}
+
+.scroll-right {
+    animation: scrollRight 30s linear infinite;
+}
+
+@keyframes scrollLeft {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-33.333%);
+    }
+}
+
+@keyframes scrollRight {
+    0% {
+        transform: translateX(-33.333%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.strip-track:hover {
+    animation-play-state: paused;
+}
+
+.strip-card {
+    flex: 0 0 280px;
+    aspect-ratio: 3/4;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.strip-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    z-index: 10;
+}
+
+/* Card Styles & Decorations (Standard) */
+/* Card Styles & Decorations (Standard) - EXACT REFERENCE MATCH V2 */
+.card-border {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* 3px Solid Colored Border via Padding */
+    background-color: var(--card-color, #00d9ff);
+    padding: 3px;
+
+    /* Strong shadow to make the border pop */
+    box-shadow:
+        0 0 10px rgba(0, 0, 0, 0.9),
+        0 0 5px var(--card-color, #00d9ff);
+
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Chamfered Shape */
+    clip-path: polygon(20px 0, 100% 0,
+            100% calc(100% - 30px), calc(100% - 30px) 100%,
+            0 100%, 0 20px);
+    overflow: hidden;
+    z-index: 5;
+}
+
+/* Hover State - Intensify Glow */
+.strip-card:hover .card-border {
+    box-shadow:
+        0 0 20px var(--card-color, #00d9ff),
+        0 0 60px rgba(0, 0, 0, 0.9);
+    /* Removed redundant transform to avoid double-jumping */
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    /* Dark Body Background */
+    background: #000;
+    /* Slightly rounded inner corners if needed, or let clip-path handle it */
+}
+
+/* Ensure Text Decorations are Visible on Top */
+.tech-decoration {
+    z-index: 20 !important;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.8));
+}
+
+/* Hide TR and BL for cleaner look */
+.tech-decoration-tr,
+.tech-decoration-bl {
+    display: none !important;
+}
+
+/* Corner Decorations - Large HUD Blocks */
+.tech-decoration {
+    position: absolute;
+    z-index: 10;
+    transition: all 0.4s ease;
+    opacity: 0.8;
+    /* Visible by default */
+}
+
+.strip-card:hover .tech-decoration {
+    opacity: 1;
+    filter: drop-shadow(0 0 5px var(--card-color, #00d9ff));
+}
+
+/* Top Left - Large Block with Crosshair */
+.tech-decoration-tl {
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 64px;
+    /* Styles handled by React Component SVG now for dynamic color */
+}
+
+/* Top Right - Bracket Corner */
+.tech-decoration-tr {
+    top: 0;
+    right: 0;
+    width: 48px;
+    height: 48px;
+}
+
+/* Bottom Left - Bracket Corner */
+.tech-decoration-bl {
+    bottom: 0;
+    left: 0;
+    width: 48px;
+    height: 48px;
+}
+
+/* Bottom Right - Target Circle & Angled Frame */
+.tech-decoration-br {
+    bottom: 0px;
+    right: 0px;
+    width: 80px;
+    height: 80px;
+    /* REMOVED CSS BACKGROUND IMAGE to allow React Component to show */
+    background: none !important;
+    border: none !important;
+    transition: transform 0.5s ease;
+}
+
+.strip-card:hover .tech-decoration-br {
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* Text & Content Adjustments */
+.card-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 18px;
+    /* Match inner radius */
+    overflow: hidden;
+}
+
+.card-image-container {
+    flex: 1;
+    position: relative;
+    margin: 6px;
+    /* Inset from bezel */
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px #000;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+    transition: all 0.5s ease;
+}
+
+.strip-card:hover .card-image {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.card-info {
+    padding: 15px 20px;
+    background: linear-gradient(to top, #000 0%, transparent 100%);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.card-title {
+    color: #fff;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+    transition: color 0.3s ease;
+}
+
+.strip-card:hover .card-title {
+    color: var(--card-color, #00d9ff);
+    text-shadow: 0 0 10px var(--card-color, #00d9ff);
+}
+
+.card-category {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--card-color, #00BFFF);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    background: transparent;
+    /* Outlined style from reference */
+    border: 1px solid var(--card-color, #00BFFF);
+    font-family: 'Courier New', monospace;
+    transition: all 0.3s ease;
+}
+
+/* Hover state: Filled tag */
+.strip-card:hover .card-category {
+    background: var(--card-color, #00BFFF);
+    color: #000;
+    /* Contrast text on filled bg */
+    box-shadow: 0 0 10px var(--card-color, #00BFFF);
+}
+
+.card-description {
+    color: #888;
+    /* Gray text for description */
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-top: 4px;
+    transition: color 0.3s ease;
+}
+
+.strip-card:hover .card-description {
+    color: #fff;
+    /* White on hover for better visibility */
+}
+
+
+
+.explore-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.explore-button {
+    padding: 16px 60px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    border: 2px solid #3b82f6;
+    cursor: pointer;
+}
+
+/* =========================================
+   LOGO VARIANT (Sponsors) - ULTRA PREMIUM
+   ========================================= */
+/* =========================================
+   LOGO VARIANT (Sponsors) - ACTIVE TECH SCREEN
+   ========================================= */
+/* =========================================
+   LOGO VARIANT (Sponsors) - FLOATING LOGOS (NO FRAMES)
+   ========================================= */
+.strip-logo-card {
+    flex: 0 0 240px;
+    height: 140px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Pure Floating Logo - No Visible Card/Frame */
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    overflow: visible;
+    /* Allow glow to spill out */
+    transition: transform 0.3s ease;
+    z-index: 1;
+    border-radius: 0;
+    backdrop-filter: none;
+}
+
+/* Ensure no pseudo-elements create a frame */
+.strip-logo-card::before,
+.strip-logo-card::after {
+    display: none;
+}
+
+/* Hover Effects - Lift Logo Only */
+.strip-logo-card:hover {
+    transform: translateY(-5px) scale(1.1);
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.logo-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.sponsor-logo {
+    max-width: 100%;
+    max-height: 80%;
+    /* Slightly larger since no frame constrains it visualy */
+    object-fit: contain;
+    /* Clean, visible logo */
+    filter: brightness(1) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    transition: all 0.3s ease;
+}
+
+.strip-logo-card:hover .sponsor-logo {
+    /* Glow on hover */
+    filter: brightness(1.2) drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+    transform: scale(1.05);
+}
