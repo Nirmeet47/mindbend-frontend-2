@@ -2,32 +2,13 @@
 
 import ManagerialBackground from '@/components/managerial/ManagerialBackground';
 import EventCard from '@/components/managerial/EventCard';
+import { IMAGES } from '@/components/events/constants'; // Import real data
+import Link from 'next/link';
 
-// Imports from static folder
-import img1 from '@/static/1.png';
-import img2 from '@/static/2.png';
-import img3 from '@/static/3.png';
-import img4 from '@/static/4.png';
-import img5 from '@/static/5.png';
-import img6 from '@/static/6.png';
-import img7 from '@/static/7.png';
-import img8 from '@/static/8.png';
-import img9 from '@/static/9.png';
-import img10 from '@/static/10.png';
-import img11 from '@/static/11.png';
-
-const images = [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11];
-
-// Dummy Data Generator
-const EVENTS = Array.from({ length: 20 }).map((_, i) => ({
-    id: i,
-    title: `Managerial Event ${i + 1}`,
-    description: "Experience the ultimate test of leadership and strategy. Compete with the best minds and showcase your managerial prowess in this high-stakes challenge.",
-    date: `March ${15 + (i % 5)}th, 2025`,
-    prize: `₹${(10 + (i % 5)) * 1000}`,
-    // Assign images round-robin or random
-    image: images[i % images.length]
-}));
+// Helper to generate slug consistent with the detail page logic
+const generateSlug = (item: any) => {
+    return `${item.title.toLowerCase().replace(/\s+/g, '-')}-${item.subtitle.toLowerCase().replace(/\s+/g, '-')}`;
+};
 
 export default function ManagerialPage() {
     return (
@@ -52,17 +33,21 @@ export default function ManagerialPage() {
                 {/* Event Grid */}
                 <div className="container mx-auto px-4 pb-20">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {EVENTS.map((event, index) => (
-                            <EventCard
-                                key={event.id}
-                                title={event.title}
-                                description={event.description}
-                                date={event.date}
-                                prize={event.prize}
-                                delay={index * 0.05} // Staggered animation
-                                image={event.image.src} // Pass the src string
-                            />
-                        ))}
+                        {IMAGES.map((event, index) => {
+                            const slug = generateSlug(event);
+                            return (
+                                <Link href={`/events/events/${slug}`} key={event.id} className="block">
+                                    <EventCard
+                                        title={`${event.title} ${event.subtitle}`}
+                                        description={event.description.substring(0, 100) + "..."}
+                                        date={`March ${15 + (index % 3)}th`}
+                                        prize={`₹${(index + 1) * 5000}`}
+                                        delay={index * 0.05} // Staggered animation
+                                        image={event.image}
+                                    />
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
