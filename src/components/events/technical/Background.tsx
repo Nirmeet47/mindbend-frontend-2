@@ -28,6 +28,31 @@ const TechnicalBackground = () => {
         return () => clearInterval(intervalId);
     }, []);
 
+    useEffect(() => {
+        let timeouts: any[] = [];
+
+        const runSequence = () => {
+            const t1 = setTimeout(() => setIs3D(true), 500);
+            const t2 = setTimeout(() => setIsBoost(true), 2500);
+            const t3 = setTimeout(() => setIsInspect(true), 4500);
+            const t4 = setTimeout(() => {
+                setIs3D(false);
+                setIsBoost(false);
+                setIsInspect(false);
+            }, 10000);
+
+            timeouts = [t1, t2, t3, t4];
+        };
+
+        runSequence();
+        const intervalId = setInterval(runSequence, 15000);
+
+        return () => {
+            clearInterval(intervalId);
+            timeouts.forEach(clearTimeout);
+        };
+    }, []);
+
     return (
         <>
             {/* BACKGROUND LAYER - VISUALS ONLY */}

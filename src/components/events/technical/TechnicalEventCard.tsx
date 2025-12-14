@@ -62,7 +62,7 @@ const TechnicalEventCard: React.FC<EventCardProps> = ({ title, date, prize, dela
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay }}
-            className="relative group min-h-[350px] w-full max-w-[320px] mx-auto"
+            className="relative group min-h-[350px] w-full max-w-[350px] mx-auto"
         >
             {/* Background Shape */}
             <div
@@ -85,13 +85,13 @@ const TechnicalEventCard: React.FC<EventCardProps> = ({ title, date, prize, dela
 
 
             {/* Internal Content */}
-            <div className="relative z-10 p-6 flex flex-col h-full">
+            <div className="relative z-10 p-4 flex flex-col h-full">
                 {/* Header */}
-                <div className="mb-4 pl-2 border-l-2 border-[#33ABB9]/50">
+                <div className="mb-3 pl-2 border-l-2 border-[#33ABB9]/50">
                     <span className="block text-[10px] font-mono text-[#33ABB9] mb-1 tracking-widest uppercase">
                         SYS.ID // 0{Math.floor(Math.random() * 99)}
                     </span>
-                    <h3 className="text-xl font-bold text-white tracking-wide group-hover:text-[#33ABB9] transition-colors uppercase font-['Orbitron']">
+                    <h3 className="text-lg font-bold text-white tracking-wide group-hover:text-[#33ABB9] transition-colors uppercase font-['Orbitron']">
                         {title}
                     </h3>
                     <div className="mt-2 flex items-center space-x-2">
@@ -103,7 +103,7 @@ const TechnicalEventCard: React.FC<EventCardProps> = ({ title, date, prize, dela
                 </div>
 
                 {/* Image Placeholder */}
-                <div className="relative w-full h-32 mb-4 rounded-sm overflow-hidden border border-white/10 bg-black/50 group-hover:border-[#33ABB9]/30 transition-colors">
+                <div className="relative w-full h-24 mb-3 rounded-sm overflow-hidden border border-white/10 bg-black/50 group-hover:border-[#33ABB9]/30 transition-colors">
                     {image ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={image} alt={title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />

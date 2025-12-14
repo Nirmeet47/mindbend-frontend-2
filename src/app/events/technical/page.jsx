@@ -45,7 +45,7 @@ function Technical() {
 
         {/* Hero Section */}
         <div className="flex flex-col items-center min-h-[50vh] -px-4 pointer-events-auto">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white via-[#33ABB9] to-[#184344] mb-4 drop-shadow-[0_0_10px_rgba(51,171,185,0.5)] font-['Orbitron']">
+          <h1 className="text-5xl md:text-6xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white via-[#33ABB9] to-[#184344] mb-4 drop-shadow-[0_0_10px_rgba(51,171,185,0.5)] font-['Orbitron']">
             TECHNICAL
           </h1>
           <p className="max-w-xl text-lg text-[#33ABB9]/80 font-mono tracking-widest">
@@ -55,8 +55,8 @@ function Technical() {
 
         {/* Event Grid */}
         <div className="container mx-auto px-4 pb-20 pointer-events-auto">
-          {/* Reverting to 3 columns as requested for more space */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+          {/* 3 columns with decreased gap */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {TECHNICAL_EVENTS.map((event, index) => (
               <TechnicalEventCard
                 key={event.id}
