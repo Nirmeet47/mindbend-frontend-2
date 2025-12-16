@@ -1,172 +1,177 @@
-"use client";
-
-import React, { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const AboutHero: React.FC = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const triangleRef = useRef<HTMLDivElement>(null);
+const AboutMB = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // GSAP animation for the triangle on scroll
-    if (triangleRef.current) {
-      gsap.fromTo(
-        triangleRef.current,
-        {
-          opacity: 0,
-          scale: 0.8,
-        },
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 1.5,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: triangleRef.current,
-            start: 'top 80%',
-            end: 'bottom 20%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-    }
-
-    // Subtle glow animation
-    if (heroRef.current) {
-      gsap.to(heroRef.current, {
-        '--glow-intensity': '1',
-        duration: 2,
-        ease: 'power2.inOut',
-        yoyo: true,
-        repeat: -1,
-        delay: 1,
+    const ctx = gsap.context(() => {
+      // Set initial state
+      gsap.set(containerRef.current, {
+        opacity: 0,
+        y: 100,
+        scale: 0.8
       });
-    }
 
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
+      // Create scroll-triggered animation
+      gsap.to(containerRef.current, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1.2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 80%",
+          end: "bottom 20%",
+          toggleActions: "play none none reverse"
+        }
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
-    <section
-      ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black"
-      style={{
-        background: `
-          radial-gradient(ellipse at center, rgba(0, 20, 40, 0.8) 0%, rgba(0, 0, 0, 1) 100%),
-          linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(255, 0, 255, 0.1) 50%, rgba(255, 255, 0, 0.1) 100%)
-        `,
-        '--glow-intensity': '0.5',
-      } as React.CSSProperties}
+    <div
+      ref={containerRef}
+      className='min-h-screen relative flex flex-col justify-center items-center overflow-hidden py-16 md:py-24'
     >
-      {/* Cosmic background particles */}
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-purple-400 rounded-full animate-pulse delay-1000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse delay-500"></div>
-        <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-pink-400 rounded-full animate-pulse delay-1500"></div>
-      </div>
+      {/* Background Overlay */}
+      <div className="absolute inset-0 bg-black opacity-75"></div>
 
-      {/* Main triangular prism */}
-      <motion.div
-        ref={triangleRef}
-        className="relative w-full max-w-4xl mx-auto px-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div
-          className="relative mx-auto"
-          style={{
-            clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
-            aspectRatio: '1 / 0.866', // Equilateral triangle ratio
-            filter: 'drop-shadow(0 0 50px rgba(0, 255, 255, var(--glow-intensity)))',
-          }}
-        >
-          {/* Glass morphism background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/20 via-purple-900/20 to-yellow-900/20 backdrop-blur-sm border border-cyan-400/30"></div>
+      {/* SVG Pattern Definition */}
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <defs>
+          <pattern id="brickPattern" x="0" y="0" width="60" height="30" patternUnits="userSpaceOnUse">
+            <rect width="60" height="30" fill="rgba(34, 211, 238, 0.05)" />
+            <rect x="1" y="1" width="27" height="12" fill="rgba(34, 211, 238, 0.2)" stroke="rgba(34, 211, 238, 0.4)" strokeWidth="0.5" />
+            <rect x="31" y="1" width="27" height="12" fill="rgba(34, 211, 238, 0.2)" stroke="rgba(34, 211, 238, 0.4)" strokeWidth="0.5" />
+            <rect x="16" y="16" width="27" height="12" fill="rgba(34, 211, 238, 0.2)" stroke="rgba(34, 211, 238, 0.4)" strokeWidth="0.5" />
+          </pattern>
+        </defs>
+      </svg>
 
-          {/* Inner glow layers */}
-          <div className="absolute inset-2 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10 rounded-sm"></div>
-          <div className="absolute inset-4 bg-gradient-to-tl from-yellow-500/5 via-transparent to-cyan-500/5 rounded-sm"></div>
+      {/* Content Container */}
+      <div className="relative z-10 max-w-5xl mx-auto space-y-12 md:space-y-16 text-white px-4 sm:px-6 lg:px-8">
+        {/* Card Container */}
+        <div className="relative trapezoid-container p-12 md:p-20 shadow-2xl">
+          {/* Outer Border */}
+          <div className="outer-border"></div>
 
-          {/* Content container */}
-          <div className="relative z-10 flex flex-col items-center justify-center h-full p-6 sm:p-8 md:p-12 text-center">
-            {/* Main heading */}
-            <motion.h1
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-orbitron font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-purple-300 to-yellow-300 tracking-wider"
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
+          {/* Brick Pattern Layer */}
+          <div className="brick-layer"></div>
+
+          {/* Inner Border */}
+          <div className="inner-border"></div>
+
+          {/* Background Content */}
+          <div className="trapezoid-content bg-black/40 backdrop-blur-md"></div>
+
+          {/* Text Content */}
+          <div className="relative z-10">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-orbi font-medium text-center mb-6 md:mb-8 text-cyan-300 thin-glow max-w-xl mx-auto wrap-break-word">
               ABOUT MINDBEND
-            </motion.h1>
-
-            {/* Mission description */}
-            <motion.div
-              className="max-w-2xl mb-8 text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-            >
-              <p className="mb-4">
-                Gujarat's largest Techno-Managerial fest, hosted annually by SVNIT Surat, brings together innovation and culture in spectacular harmony.
-              </p>
-              <p className="text-cyan-300 font-semibold text-base sm:text-lg">
-                2025 Theme: "Ecogenesis: Bharat's Journey from Roots to Revolution"
-              </p>
-              <p className="mt-2 text-sm sm:text-base">
-                Celebrating India's rich cultural heritage while embracing technological progress through workshops, competitions, and inspiring sessions that attract 15,000+ participants.
-              </p>
-            </motion.div>
-
-            {/* Stats row */}
-            <motion.div
-              className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8 w-full max-w-3xl"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.9, duration: 0.8 }}
-            >
-              <div className="bg-black/30 backdrop-blur-sm border border-cyan-400/20 rounded-lg p-4">
-                <div className="text-2xl sm:text-3xl font-orbitron font-bold text-cyan-300 mb-1">15K+</div>
-                <div className="text-xs sm:text-sm text-gray-400 uppercase tracking-wide">Participants</div>
-              </div>
-              <div className="bg-black/30 backdrop-blur-sm border border-purple-400/20 rounded-lg p-4">
-                <div className="text-lg sm:text-xl font-orbitron font-bold text-purple-300 mb-1">Techno-Managerial</div>
-                <div className="text-xs sm:text-sm text-gray-400 uppercase tracking-wide">Workshops & Competitions</div>
-              </div>
-              <div className="bg-black/30 backdrop-blur-sm border border-yellow-400/20 rounded-lg p-4">
-                <div className="text-sm sm:text-base font-orbitron font-bold text-yellow-300 mb-1">Renowned Speakers</div>
-                <div className="text-xs text-gray-400 leading-tight">
-                  Dr. G. Satheesh Reddy • Capt. Yogendra Singh Yadav • Aman Dhattarwal • Shradha Khapra • Sandeep Jain
-                </div>
-              </div>
-            </motion.div>
-
-            {/* CTA */}
-            <motion.button
-              className="px-6 py-3 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/40 rounded-full text-cyan-300 hover:text-white hover:border-cyan-300 transition-all duration-300 backdrop-blur-sm font-orbitron text-sm sm:text-base tracking-wide"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 1.2, duration: 0.8 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              EXPLORE THE LEGACY →
-            </motion.button>
+            </h2>
+            <p className="text-base sm:text-lg md:text-xl leading-relaxed text-center text-gray-200 font-bruno max-w-2xl mx-auto wrap-break-word overflow-wrap-anywhere px-4">
+              Mindbend is <span className="text-cyan-400 font-semibold">Gujarat's largest Techno-Managerial fest</span>, hosted annually by <span className="text-cyan-400 font-semibold">SVNIT, Surat</span>. The <span className="text-cyan-400 font-semibold">2025 edition</span>, themed <span className="text-cyan-400 font-semibold">"SYMBIONT: The Cognitive Genesis"</span> celebrates India's cultural heritage and technological progress. Attracting over <span className="text-cyan-400 font-semibold">15,000 participants</span>, it features <span className="text-cyan-400 font-semibold">workshops</span>, <span className="text-cyan-400 font-semibold">competitions</span>, and <span className="text-cyan-400 font-semibold">engaging activities</span>. Past guest lectures have included notable figures like <span className="text-cyan-400 font-semibold">Dr. G. Satheesh Reddy</span>(Ex-Chairman, DRDO) and <span className="text-cyan-400 font-semibold">Captain Yogendra Singh Yadav (Param Vir Chakra)</span>. The fest has also featured influential speakers like <span className="text-cyan-400 font-semibold">Aman Dhattarwal</span>, <span className="text-cyan-400 font-semibold">Shradha Khapra</span>, and <span className="text-cyan-400 font-semibold">Sandeep Jain</span>, who have inspired and educated attendees.
+            </p>
           </div>
         </div>
-      </motion.div>
+      </div>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Bruno+Ace:wght@400..900&family=Orbitron&display=swap');
 
-      {/* Subtle vignette effect */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none"></div>
-    </section>
+        .font-bruno {
+          font-family: 'Bruno Ace';
+        }
+        .font-orbi {
+          font-family: 'Orbitron', sans-serif;
+        }
+
+        .trapezoid-container {
+          position: relative;
+        }
+
+        .outer-border {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: transparent;
+          border: 2px solid rgba(34, 211, 238, 0.6);
+          clip-path: polygon(
+            10% 1%, 12% 0.5%, 88% 0.5%, 90% 1%,
+            90% 1%, 99% 99%, 98.5% 99.5%, 1.5% 99.5%, 1% 99%, 10% 1%
+          );
+          z-index: 1;
+          border-radius: 4px;
+        }
+
+        .brick-layer {
+          position: absolute;
+          top: 2px;
+          left: 2px;
+          right: 2px;
+          bottom: 2px;
+          background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="30"><rect width="60" height="30" fill="rgba(34, 211, 238, 0.05)"/><rect x="1" y="1" width="27" height="12" fill="rgba(34, 211, 238, 0.2)" stroke="rgba(34, 211, 238, 0.4)" stroke-width="0.5"/><rect x="31" y="1" width="27" height="12" fill="rgba(34, 211, 238, 0.2)" stroke="rgba(34, 211, 238, 0.4)" stroke-width="0.5"/><rect x="16" y="16" width="27" height="12" fill="rgba(34, 211, 238, 0.2)" stroke="rgba(34, 211, 238, 0.4)" stroke-width="0.5"/></svg>');
+          clip-path: polygon(
+            11% 1.5%, 12.5% 1%, 87.5% 1%, 89% 1.5%,
+            89% 1.5%, 98.5% 98.5%, 98% 99%, 2% 99%, 1.5% 98.5%, 11% 1.5%
+          );
+          z-index: 2;
+          border-radius: 4px;
+          animation: brickGlow 4s ease-in-out infinite;
+        }
+
+        .inner-border {
+          position: absolute;
+          top: 12px;
+          left: 12px;
+          right: 12px;
+          bottom: 12px;
+          background: transparent;
+          border: 2px solid rgba(34, 211, 238, 0.6);
+          clip-path: polygon(
+            12% 2%, 14% 1%, 86% 1%, 88% 2%,
+            88% 2%, 97% 98%, 96% 99%, 4% 99%, 3% 98%, 12% 2%
+          );
+          z-index: 3;
+          border-radius: 3px;
+        }
+
+        .trapezoid-content {
+          position: absolute;
+          top: 14px;
+          left: 14px;
+          right: 14px;
+          bottom: 14px;
+          clip-path: polygon(
+            15% 2.5%, 17% 1.5%, 83% 1.5%, 85% 2.5%,
+            85% 2.5%, 96.5% 97.5%, 96% 98.5%, 4% 98.5%, 3.5% 97.5%, 15% 2.5%
+          );
+          z-index: 4;
+          border-radius: 3px;
+        }
+
+        @keyframes brickGlow {
+          0%, 100% {
+            filter: brightness(1) saturate(1);
+            transform: scale(1);
+          }
+          50% {
+            filter: brightness(1.2) saturate(1.3);
+            transform: scale(1.005);
+          }
+        }
+      `}</style>
+    </div>
   );
 };
 
-export default AboutHero;
+export default AboutMB;

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import NavigationButton from '@/components/home/navigation/NavigationButton';
 import AboutSection from '@/components/home/AboutSection';
+import AboutHero from '@/components/home/about/AboutHero';
 import InspiringWords from '@/components/home/inspiring-words/InspiringWords';
 import TimerSection from '@/components/home/TimerSection';
 import MechanicalTransition from '@/components/home/navigation/MechanicalTransition';
@@ -44,6 +45,7 @@ export default function Home() {
       ) : (
         <>
           <AboutSection />
+          <AboutHero />
           <TimerSection />
           <InspiringWords />
         </>
