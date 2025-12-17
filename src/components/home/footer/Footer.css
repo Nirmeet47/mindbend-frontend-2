@@ -1,0 +1,380 @@
+/* Main Footer Container */
+.footer-section {
+    width: 100%;
+    background: #0a0e27;
+    /* THEME_NAVY */
+    position: relative;
+    overflow: hidden;
+    padding: 80px 0 0 0;
+    border-top: 1px solid rgba(0, 217, 255, 0.2);
+    /* THEME_CYAN low opacity */
+    font-family: 'Rajdhani', sans-serif;
+    color: #ffffff;
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px 60px 40px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+    gap: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+/* =========================================
+   COLUMN 1: BRAND ID (Glitch Effect)
+   ========================================= */
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.footer-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    position: relative;
+    width: fit-content;
+}
+
+.footer-logo::before,
+.footer-logo::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0a0e27;
+}
+
+.footer-logo::before {
+    left: 2px;
+    text-shadow: -1px 0 #00d9ff;
+    /* Cyan shadow */
+    animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+
+.footer-logo::after {
+    left: -2px;
+    text-shadow: -1px 0 #00bfff;
+    /* Blue shadow */
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+    0% {
+        clip-path: inset(20% 0 80% 0);
+    }
+
+    20% {
+        clip-path: inset(60% 0 10% 0);
+    }
+
+    40% {
+        clip-path: inset(40% 0 50% 0);
+    }
+
+    60% {
+        clip-path: inset(80% 0 5% 0);
+    }
+
+    80% {
+        clip-path: inset(10% 0 70% 0);
+    }
+
+    100% {
+        clip-path: inset(30% 0 20% 0);
+    }
+}
+
+@keyframes glitch-anim-2 {
+    0% {
+        clip-path: inset(10% 0 60% 0);
+    }
+
+    20% {
+        clip-path: inset(30% 0 20% 0);
+    }
+
+    40% {
+        clip-path: inset(70% 0 40% 0);
+    }
+
+    60% {
+        clip-path: inset(20% 0 50% 0);
+    }
+
+    80% {
+        clip-path: inset(50% 0 30% 0);
+    }
+
+    100% {
+        clip-path: inset(0% 0 90% 0);
+    }
+}
+
+.footer-tagline {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.6;
+    max-width: 300px;
+}
+
+/* =========================================
+   COLUMNS 2 & 3: LINKS (Holographic Hover)
+   ========================================= */
+.footer-column h3 {
+    font-family: 'Orbitron', sans-serif;
+    color: #00d9ff;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    display: inline-block;
+}
+
+.footer-column h3::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: #00d9ff;
+    box-shadow: 0 0 10px #00d9ff;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-link a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+    position: relative;
+}
+
+.footer-link a:hover {
+    color: #00bfff;
+    /* Tech Blue */
+    padding-left: 10px;
+    text-shadow: 0 0 8px rgba(0, 191, 255, 0.6);
+}
+
+.footer-link a::before {
+    content: '>';
+    position: absolute;
+    left: -15px;
+    opacity: 0;
+    color: #00d9ff;
+    transition: all 0.3s ease;
+}
+
+.footer-link a:hover::before {
+    opacity: 1;
+    left: 0;
+}
+
+/* =========================================
+   COLUMN 4: SOCIAL & CONTACT
+   ========================================= */
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-hex {
+    width: 45px;
+    height: 52px;
+    /* Hexagon ratio */
+    background: rgba(0, 217, 255, 0.05);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00d9ff;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    /* Faux border via background trick needed if clip-path used, simplifying here */
+    position: relative;
+}
+
+.social-hex::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #00d9ff;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.social-hex:hover {
+    transform: translateY(-5px);
+    color: #0a0e27;
+}
+
+.social-hex:hover::before {
+    opacity: 1;
+}
+
+/* Contact Info */
+.contact-info {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+}
+
+.contact-icon {
+    color: #00d9ff;
+}
+
+/* =========================================
+   COLUMN 4: MAP INTEGRATION
+   ========================================= */
+.footer-map-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-map-container {
+    width: 100%;
+    height: 180px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(0, 217, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 217, 255, 0.1);
+    margin-bottom: 20px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.footer-map-container:hover {
+    border-color: #00d9ff;
+    box-shadow: 0 0 25px rgba(0, 217, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.footer-map-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    filter: invert(90%) hue-rotate(180deg) contrast(1.2);
+    /* Tech dark mode map style */
+}
+
+.contact-info-compact {
+    margin-bottom: 15px;
+}
+
+/* =========================================
+   SYSTEM TICKER (Bottom Bar)
+   ========================================= */
+.system-ticker {
+    background: #020617;
+    /* Darker void */
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 10px 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    color: rgba(0, 217, 255, 0.6);
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+}
+
+.ticker-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: ticker-scroll 30s linear infinite;
+}
+
+.ticker-item {
+    display: inline-block;
+    margin-right: 50px;
+}
+
+.ticker-green {
+    color: #00ff00;
+}
+
+.ticker-dim {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes ticker-scroll {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+
+    100% {
+        transform: translate3d(-100%, 0, 0);
+    }
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 1024px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        padding-bottom: 40px;
+        text-align: center;
+    }
+
+    .footer-column h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .footer-links {
+        align-items: center;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+
+    .contact-item {
+        justify-content: center;
+    }
+
+    .footer-logo {
+        margin: 0 auto;
+    }
+}
