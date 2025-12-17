@@ -13,6 +13,8 @@
     "@react-three/fiber": "^9.4.2",
     "clsx": "^2.1.1",
     "gsap": "^3.14.1",
+    "react-hook-form": "^7.68.0",
+    "three": "^0.182.0"
     "motion": "^12.23.26",
     "next": "16.0.8",
     "react": "19.2.1",
