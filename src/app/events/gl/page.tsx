@@ -1,9 +1,7 @@
-import React from 'react'
-
-function GuestLecture() {
+export default function GLPage() {
   return (
-    <div>GuestLecture</div>
-  )
+    <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <h1 className="text-4xl font-bold">GL Events Page</h1>
+    </div>
+  );
 }
-
-export default GuestLecture
