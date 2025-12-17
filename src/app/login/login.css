@@ -1,0 +1,139 @@
+.logincard-container {
+
+    position: relative;
+    /* width: 350px;*/
+    /* height: 350px;  */
+    width: 450px;
+    transition: height 0.75s ease-in-out;
+    /* margin-top: 20px; */
+}
+
+
+.logincard-border-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    transition: all 0.5s ease-in-out;
+}
+
+.logincard-border-svg polygon {
+    transition: all 0.5s ease-in-out;
+}
+
+.loginbtn-container {
+    position: relative;
+    width: 100%;
+    height: 40px;
+}
+
+.loginbtn-border-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#loginbtn {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(5% 0%, 95% 0%, 100% 0%, 100% 80%, 95% 100%, 0% 100%, 0% 80%, 0% 20%);
+    background: linear-gradient(to right, transparent 50%, #8b5cf6 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: all 0.3s ease-out;
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-family: "Orbitron";
+}
+
+#loginbtn:hover {
+    background-position: left bottom;
+    box-shadow: 0 0 20px rgba(255, 0, 128, 0.6);
+}
+
+#loginbtn:active {
+    transform: scale(0.98);
+}
+
+.logincardeffect {
+    clip-path: polygon(0% 10%, 10% 0%, 36% 0%, 41% 5%, 95% 5%, 100% 10%, 100% 95%, 95% 100%, 5% 100%, 0% 95%);
+}
+
+.logincardeffect1 {
+    clip-path: polygon(0% 20%, 5% 0%, 36% 0%, 41% 10%, 95% 10%, 100% 20%, 100% 90%, 95% 100%, 5% 100%, 0% 90%);
+}
+
+.logincard {
+
+    transition: clip-path 0.5s ease-in-out;
+    position: relative;
+    padding: 40px;
+    background-color: rgba(0, 255, 255, 0.1);
+    /* background-color: red; */
+    width: 100%;
+    height: 100%;
+
+
+}
+
+.wrapper {
+    clip-path: polygon(0% 10%, 10% 0%, 36% 0%, 41% 5%, 95% 5%, 100% 10%, 100% 95%, 95% 100%, 5% 100%, 0% 95%);
+
+    background-color: white;
+}
+
+.loginsection {
+    background-image: url("/IMG_20251214_181340.png");
+    background-size: cover;
+    background-position: center;
+    
+    /* filter: brightness(75%);  */
+    opacity: 0.4
+}
+
+/* .logincard::before {
+
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 50px;
+    height: 50px;
+    border-top: 4px solid #00ffff;
+    border-left: 4px solid #00ffff;
+    box-shadow: 0 0 20px #00ffff;
+
+} */
+
+/* .logincard::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    width: 50px;
+    height: 50px;
+    border-bottom: 4px solid #00ffff;
+    border-right: 4px solid #00ffff;
+    box-shadow: 0 0 20px #00ffff;
+} */
+
+.form h1 {
+    font-family: var(--font-orbitron), sans-serif;
+
+}
+
+.form input::placeholder {
+    font-family: var(--font-orbitron), sans-serif;
+    font-size: 14px;
+}
+
+/* For top-right and bottom-left: Add two more classes or use additional pseudo via extra divs */
