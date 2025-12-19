@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { IMAGES } from '@/components/events/constants';
@@ -17,9 +17,13 @@ const BackgroundScene = dynamic(() => import('@/components/events/temp/Backgroun
 export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const eventId = params.slug as string;
   const containerRef = useRef(null);
   const { setIsTransitioning, setActiveItem } = useTransition();
+
+  // Get the source page from query params or default to managerial
+  const source = searchParams.get('from') || 'managerial';
 
   // Clear transition state when component mounts
   useEffect(() => {
@@ -34,7 +38,8 @@ export default function EventDetailPage() {
   const handleBack = () => {
     setActiveItem(null);
     setIsTransitioning(false);
-    router.push('/events/managerial');
+    // Navigate back to the source page
+    router.push(`/events/${source}`);
   };
 
   // Find the event by ID or slug
@@ -53,7 +58,7 @@ export default function EventDetailPage() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-[#050505] text-white overflow-x-hidden selection:bg-[#FF4D00] selection:text-white font-sans"
+      className="min-h-screen bg-[#050505] text-white overflow-x-hidden selection:bg-blue-500/30 selection:text-white font-sans"
       ref={containerRef}
     >
       {/* Background 3D Scene - Preserved */}
@@ -64,7 +69,7 @@ export default function EventDetailPage() {
       {/* Grid Overlay */}
       <div className="fixed inset-0 z-0 opacity-5 pointer-events-none">
         <div className="w-full h-full" style={{
-          backgroundImage: 'linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)',
           backgroundSize: '50px 50px'
         }} />
       </div>
@@ -136,13 +141,13 @@ export default function EventDetailPage() {
             priority
           />
           <div className="absolute inset-0 bg-black/20" />
-          {/* Cyan glow overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 via-transparent to-orange-500/10 mix-blend-overlay" />
+          {/* Blue glow overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-blue-500/20 via-transparent to-blue-400/10 mix-blend-overlay" />
           {/* Scanline effect */}
           <motion.div
             className="absolute inset-0 opacity-10"
             style={{
-              backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.3) 2px, rgba(0, 240, 255, 0.3) 4px)',
+              backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(59, 130, 246, 0.3) 2px, rgba(59, 130, 246, 0.3) 4px)',
             }}
             animate={{
               y: ['0%', '100%'],
@@ -164,7 +169,7 @@ export default function EventDetailPage() {
         >
           <motion.h2
             layoutId={`event-subtitle-${event.id}`}
-            className="text-xl md:text-3xl font-bold uppercase tracking-widest text-[#FF4D00]"
+            className="text-xl md:text-3xl font-bold uppercase tracking-widest text-blue-400"
           >
             {event.subtitle}
           </motion.h2>
@@ -175,10 +180,10 @@ export default function EventDetailPage() {
       < div className="sticky top-0 z-40 bg-[#050505] border-y border-white/10 backdrop-blur-md" >
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
           {[
-            { label: "DATE", value: "JAN 15-17" },
-            { label: "LOCATION", value: "BLOCK A" },
-            { label: "TYPE", value: "MANAGERIAL" },
-            { label: "STATUS", value: "OPEN" },
+            { label: "DATE", value: event.eventDate ? new Date(event.eventDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : "TBA" },
+            { label: "LOCATION", value: event.venue || "TBA" },
+            { label: "TYPE", value: event.type?.toUpperCase() || "MANAGERIAL" },
+            { label: "STATUS", value: event.stopRegistration ? "CLOSED" : "OPEN" },
           ].map((item, i) => (
             <div key={i} className="p-4 text-center">
               <span className="block text-[10px] text-gray-500 tracking-[0.2em] mb-1">{item.label}</span>
@@ -199,10 +204,45 @@ export default function EventDetailPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h3 className="text-sm font-bold text-[#FF4D00] mb-6 tracking-[0.2em] uppercase">The Challenge</h3>
-            <p className="text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight uppercase max-w-5xl">
+            <h3 className="text-sm font-bold text-blue-400 mb-6 tracking-[0.2em] uppercase">About The Event</h3>
+            <p className="text-2xl md:text-4xl lg:text-5xl font-bold leading-[1.2] tracking-tight max-w-5xl mb-8">
               {event.description}
             </p>
+            {event.isTeamEvent !== undefined && (
+              <div className="flex flex-wrap gap-6 mt-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <span className="text-2xl">👥</span>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 uppercase tracking-wider">Team Event</p>
+                    <p className="text-lg font-bold">{event.isTeamEvent ? 'Yes' : 'Solo'}</p>
+                  </div>
+                </div>
+                {event.isTeamEvent && event.minTeamSize && event.maxTeamSize && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+                      <span className="text-2xl">🎯</span>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase tracking-wider">Team Size</p>
+                      <p className="text-lg font-bold">{event.minTeamSize}-{event.maxTeamSize} Members</p>
+                    </div>
+                  </div>
+                )}
+                {event.entryFee !== undefined && event.entryFee > 0 && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+                      <span className="text-2xl">💰</span>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase tracking-wider">Entry Fee</p>
+                      <p className="text-lg font-bold">₹{event.entryFee}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </motion.div>
         </section >
 
@@ -213,7 +253,7 @@ export default function EventDetailPage() {
           </div>
           <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
             <h2 className="text-[10vw] leading-none font-black tracking-tighter uppercase">
-              WELCOME TO <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF4D00] to-[#FF0080]">{event.title}</span>
+              WELCOME TO <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">{event.title}</span>
             </h2>
           </div>
         </section >
@@ -227,18 +267,25 @@ export default function EventDetailPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(255, 77, 0, 0.6)' }}
-              className="aspect-square bg-[#FF4D00] p-8 flex flex-col justify-between group cursor-pointer hover:bg-[#FF6020] transition-all relative overflow-hidden"
+              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
+              className="aspect-square bg-blue-500 p-8 flex flex-col justify-between group cursor-pointer hover:bg-blue-600 transition-all relative overflow-hidden"
               style={{
-                boxShadow: '0 0 20px rgba(255, 77, 0, 0.3)',
+                boxShadow: '0 0 20px rgba(59, 130, 246, 0.3)',
               }}
             >
               {/* Glow effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <ArrowUpRight className="w-8 h-8 text-white group-hover:rotate-45 transition-transform relative z-10" />
               <div className="relative z-10">
-                <h4 className="text-4xl font-black uppercase leading-none mb-2">BOUNTY<br />POOL</h4>
-                <p className="text-xl font-medium opacity-80">₹50,000 INR</p>
+                <h4 className="text-4xl font-black uppercase leading-none mb-2">PRIZE<br />POOL</h4>
+                <p className="text-xl font-medium opacity-80">₹{event.prizeMoney?.toLocaleString() || '0'} INR</p>
+                {event.prizeDistribution && (
+                  <div className="mt-4 text-sm space-y-1">
+                    <p>1st: ₹{event.prizeDistribution.first.toLocaleString()}</p>
+                    <p>2nd: ₹{event.prizeDistribution.second.toLocaleString()}</p>
+                    <p>3rd: ₹{event.prizeDistribution.third.toLocaleString()}</p>
+                  </div>
+                )}
               </div>
             </motion.div>
 
@@ -248,10 +295,10 @@ export default function EventDetailPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(0, 240, 255, 0.5)' }}
+              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(59, 130, 246, 0.5)' }}
               className="aspect-square relative overflow-hidden group"
               style={{
-                boxShadow: '0 0 20px rgba(0, 240, 255, 0.2)',
+                boxShadow: '0 0 20px rgba(59, 130, 246, 0.2)',
               }}
             >
               <Image
@@ -261,12 +308,12 @@ export default function EventDetailPage() {
                 className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-              {/* Cyan overlay on hover */}
-              <div className="absolute inset-0 bg-cyan-400/0 group-hover:bg-cyan-400/10 transition-colors" />
+              {/* Blue overlay on hover */}
+              <div className="absolute inset-0 bg-blue-400/0 group-hover:bg-blue-400/10 transition-colors" />
 
               {/* Animated Scanner Line */}
               <motion.div
-                className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-transparent via-cyan-400 to-transparent pointer-events-none"
+                className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-transparent via-blue-400 to-transparent pointer-events-none"
                 animate={{
                   x: ['0%', '100%'],
                 }}
@@ -276,7 +323,7 @@ export default function EventDetailPage() {
                   ease: 'linear',
                 }}
                 style={{
-                  boxShadow: '0 0 20px rgba(0, 240, 255, 0.8), 0 0 40px rgba(0, 240, 255, 0.4)',
+                  boxShadow: '0 0 20px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.4)',
                 }}
               />
             </motion.div>
@@ -287,11 +334,11 @@ export default function EventDetailPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(255, 77, 0, 0.4)' }}
-              className="aspect-square bg-[#F5E6D3] text-black p-8 flex flex-col justify-between group cursor-pointer hover:bg-[#FFF0E0] transition-all relative overflow-hidden"
+              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(59, 130, 246, 0.4)' }}
+              className="aspect-square bg-blue-50 text-black p-8 flex flex-col justify-between group cursor-pointer hover:bg-blue-100 transition-all relative overflow-hidden"
             >
               {/* Animated gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-200/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-200/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="w-full flex justify-end relative z-10">
                 <motion.div
                   className="w-3 h-3 bg-black rounded-full"
@@ -307,12 +354,53 @@ export default function EventDetailPage() {
                 />
               </div>
               <div className="relative z-10">
-                <h4 className="text-3xl font-black uppercase leading-tight mb-4">
+                <h4 className="text-3xl font-black uppercase leading-tight mb-2">
                   READY TO<br />DOMINATE?
                 </h4>
-                <button className="px-6 py-3 bg-black text-white font-bold rounded-full hover:scale-105 hover:bg-[#FF4D00] transition-all w-full shadow-lg">
-                  REGISTER NOW
-                </button>
+                {event.isTeamEvent && event.minTeamSize && event.maxTeamSize && (
+                  <p className="text-sm mb-2 opacity-80">
+                    Team: {event.minTeamSize}-{event.maxTeamSize} Members
+                  </p>
+                )}
+                {event.entryFee !== undefined && event.entryFee > 0 && (
+                  <p className="text-sm mb-3 font-bold">
+                    Entry Fee: ₹{event.entryFee}
+                  </p>
+                )}
+                {event.registrationDeadline && (
+                  <p className="text-xs mb-3 opacity-70">
+                    Deadline: {new Date(event.registrationDeadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </p>
+                )}
+                <div className="space-y-2">
+                  {/* Primary Registration Button */}
+                  {event.unstopLink ? (
+                    <a href={event.unstopLink} target="_blank" rel="noopener noreferrer" className="block px-5 py-3 bg-blue-500 text-white font-bold rounded-full hover:scale-105 hover:bg-blue-600 transition-all w-full shadow-lg text-center">
+                      ⚡ REGISTER NOW
+                    </a>
+                  ) : (
+                    <button className="px-5 py-3 bg-blue-500 text-white font-bold rounded-full hover:scale-105 hover:bg-blue-600 transition-all w-full shadow-lg">
+                      ⚡ REGISTER NOW
+                    </button>
+                  )}
+                  
+                  {/* Secondary Links */}
+                  {event.psLink && (
+                    <a href={event.psLink} target="_blank" rel="noopener noreferrer" className="block px-4 py-2.5 bg-black/80 text-white font-semibold rounded-full hover:scale-105 hover:bg-black transition-all w-full shadow-lg text-center text-sm">
+                      📄 Problem Statement
+                    </a>
+                  )}
+                  {event.whatsappGrpLink && (
+                    <a href={event.whatsappGrpLink} target="_blank" rel="noopener noreferrer" className="block px-4 py-2.5 bg-green-600 text-white font-semibold rounded-full hover:scale-105 hover:bg-green-500 transition-all w-full shadow-lg text-center text-sm">
+                      💬 Join WhatsApp Group
+                    </a>
+                  )}
+                  {event.whatsappNo && (
+                    <a href={`https://wa.me/${event.whatsappNo.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="block px-4 py-2.5 bg-green-600 text-white font-semibold rounded-full hover:scale-105 hover:bg-green-500 transition-all w-full shadow-lg text-center text-sm">
+                      📞 Contact on WhatsApp
+                    </a>
+                  )}
+                </div>
               </div>
             </motion.div>
 
@@ -324,9 +412,19 @@ export default function EventDetailPage() {
 
           {/* Timeline */}
           < div >
-            <h3 className="text-sm font-bold text-[#FF4D00] mb-8 tracking-[0.2em] uppercase">Event Timeline</h3>
+            <h3 className="text-sm font-bold text-blue-400 mb-8 tracking-[0.2em] uppercase">Event Timeline</h3>
             <div className="space-y-8">
               {[
+                { 
+                  time: event.registrationDeadline ? new Date(event.registrationDeadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : "TBA", 
+                  label: "REGISTRATION DEADLINE", 
+                  desc: "Last date to register" 
+                },
+                { 
+                  time: event.eventDate ? new Date(event.eventDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : "TBA", 
+                  label: "EVENT DAY", 
+                  desc: event.venue || "Venue TBA" 
+                },
                 { time: "10:00", label: "BRIEFING", desc: "Main Auditorium" },
                 { time: "11:30", label: "ROUND 1 START", desc: "Strategy Phase" },
                 { time: "14:00", label: "LUNCH BREAK", desc: "Cafeteria" },
@@ -348,31 +446,31 @@ export default function EventDetailPage() {
 
           {/* Rules */}
           < div >
-            <h3 className="text-sm font-bold text-[#00F0FF] mb-8 tracking-[0.2em] uppercase flex items-center gap-2">
-              <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" style={{ boxShadow: '0 0 10px rgba(0, 240, 255, 0.8)' }} />
+            <h3 className="text-sm font-bold text-blue-400 mb-8 tracking-[0.2em] uppercase flex items-center gap-2">
+              <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ boxShadow: '0 0 10px rgba(59, 130, 246, 0.8)' }} />
               Protocols
             </h3>
             <div className="space-y-6">
-              {[
+              {(event.rules && event.rules.length > 0 ? event.rules : [
                 "SQUAD SIZE: 2-4 OPERATIVES REQUIRED.",
                 "NO EXTERNAL COMMS DEVICES ALLOWED IN SECURE ZONES.",
                 "ALL DECISIONS BY THE HIGH COUNCIL (JUDGES) ARE FINAL.",
                 "LATE ARRIVALS WILL BE DISQUALIFIED IMMEDIATELY."
-              ].map((rule, i) => (
+              ]).map((rule, i) => (
                 <motion.div
                   key={i}
-                  className="bg-white/5 border border-cyan-400/30 p-6 hover:bg-white/10 hover:border-cyan-400/60 transition-all relative group overflow-hidden"
+                  className="bg-white/5 border border-blue-400/30 p-6 hover:bg-white/10 hover:border-blue-400/60 transition-all relative group overflow-hidden"
                   whileHover={{ x: 4 }}
                   style={{
-                    boxShadow: '0 0 20px rgba(0, 240, 255, 0.1)',
+                    boxShadow: '0 0 20px rgba(59, 130, 246, 0.1)',
                   }}
                 >
                   {/* Glow effect on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/0 via-cyan-400/10 to-cyan-400/0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span className="block text-xs text-[#00F0FF] mb-2 font-mono relative z-10">0{i + 1} // PROTOCOL</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-blue-400/10 to-blue-400/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <span className="block text-xs text-blue-400 mb-2 font-mono relative z-10">0{i + 1} // PROTOCOL</span>
                   <p className="text-lg md:text-xl font-bold uppercase leading-tight relative z-10">{rule}</p>
                   {/* Corner accent */}
-                  <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-cyan-400/0 group-hover:border-cyan-400/50 transition-all" />
+                  <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-blue-400/0 group-hover:border-blue-400/50 transition-all" />
                 </motion.div>
               ))}
             </div>
@@ -382,7 +480,7 @@ export default function EventDetailPage() {
 
         {/* Footer Text */}
         < section className="py-24 text-center border-t border-white/10" >
-          <p className="text-sm text-gray-500 uppercase tracking-widest">MindBend 2025 / Managerial Events</p>
+          <p className="text-sm text-gray-500 uppercase tracking-widest">MindBend 2025 / {event.type ? event.type.charAt(0).toUpperCase() + event.type.slice(1) : 'Event'} Events</p>
         </section >
 
       </div >
