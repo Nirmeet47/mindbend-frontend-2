@@ -1,10 +1,10 @@
 'use client';
 
-import ManagerialBackground from '@/components/managerial/ManagerialBackground';
-import EventCard from '@/components/managerial/EventCard';
+import ManagerialBackground from '@/components/events/managerial/ManagerialBackground';
+import EventCard from '@/components/events/managerial/EventCard';
 import { IMAGES } from '@/components/events/constants'; // Import real data
 import Link from 'next/link';
-import SymbolFalling from '@/components/managerial/SymbolFalling';
+import SymbolFalling from '@/components/events/managerial/SymbolFalling';
 
 // Helper to generate slug consistent with the detail page logic
 const generateSlug = (item: any) => {
