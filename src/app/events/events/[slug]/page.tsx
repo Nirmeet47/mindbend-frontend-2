@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Users, Calendar, MapPin, Trophy, ExternalLink, MessageCircle } from 'lucide-react';
 import Image from 'next/image';

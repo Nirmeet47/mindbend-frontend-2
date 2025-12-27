@@ -1,7 +1,7 @@
 'use client';
 
 import ManagerialBackground from '@/components/events/managerial/ManagerialBackground';
-import EventCard from '@/components/events/managerial/EventCard';
+import TechnicalEventCard from '@/components/events/technical/TechnicalEventCard';
 import { IMAGES } from '@/components/events/constants'; // Import real data
 import Link from 'next/link';
 import SymbolFalling from '@/components/events/managerial/SymbolFalling';
@@ -39,18 +39,18 @@ export default function ManagerialPage() {
                 </div>
 
                 {/* Event Grid */}
-                <div className="container mx-auto px-18 pb-20">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-20 gap-y-6">
+                <div className="container mx-auto px-4 pb-20">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                         {IMAGES.map((event, index) => {
                             const slug = generateSlug(event);
                             return (
-                                <Link href={`/events/events/${slug}`} key={event.id} className="block">
-                                    <EventCard
+                                <Link href={`/events/events/${slug}?from=managerial`} key={event.id} className="block">
+                                    <TechnicalEventCard
                                         title={`${event.title} ${event.subtitle}`}
                                         description={event.description.substring(0, 100) + "..."}
                                         date={`March ${15 + (index % 3)}th`}
                                         prize={`₹${(index + 1) * 5000}`}
-                                        delay={index * 0.05} // Staggered animation
+                                        delay={index * 0.05}
                                         image={event.image}
                                     />
                                 </Link>

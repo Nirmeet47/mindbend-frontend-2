@@ -3,31 +3,13 @@
 import React from 'react';
 import TechnicalBackground from '../../../components/events/technical/Background';
 import TechnicalEventCard from '@/components/events/technical/TechnicalEventCard';
+import { IMAGES } from '@/components/events/constants'; // Import real data
+import Link from 'next/link';
 
-// Imports from static folder
-import img1 from '@/static/1.png';
-import img2 from '@/static/2.png';
-import img3 from '@/static/3.png';
-import img4 from '@/static/4.png';
-import img5 from '@/static/5.png';
-import img6 from '@/static/6.png';
-import img7 from '@/static/7.png';
-import img8 from '@/static/8.png';
-import img9 from '@/static/9.png';
-import img10 from '@/static/10.png';
-import img11 from '@/static/11.png';
-
-const images = [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11];
-
-// Dummy Data Generator for Technical Events
-const TECHNICAL_EVENTS = Array.from({ length: 20 }).map((_, i) => ({
-  id: i,
-  title: `Tech Event ${i + 1}`,
-  description: "Dive into the world of algorithms, coding errors and hardware hacks.",
-  date: `March ${15 + (i % 5)}th`,
-  prize: `₹${(15 + (i % 5)) * 1000}`,
-  image: images[i % images.length].src
-}));
+// Helper to generate slug consistent with the detail page logic
+const generateSlug = (item) => {
+  return `${item.title.toLowerCase().replace(/\s+/g, '-')}-${item.subtitle.toLowerCase().replace(/\s+/g, '-')}`;
+};
 
 function Technical() {
   return (
@@ -57,17 +39,21 @@ function Technical() {
         <div className="container mx-auto px-4 pb-20 pointer-events-auto">
           {/* 3 columns with decreased gap */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {TECHNICAL_EVENTS.map((event, index) => (
-              <TechnicalEventCard
-                key={event.id}
-                title={event.title}
-                description={event.description}
-                date={event.date}
-                prize={event.prize}
-                delay={index * 0.05}
-                image={event.image}
-              />
-            ))}
+            {IMAGES.map((event, index) => {
+              const slug = generateSlug(event);
+              return (
+                <Link href={`/events/events/${slug}?from=technical`} key={event.id} className="block">
+                  <TechnicalEventCard
+                    title={`${event.title} ${event.subtitle}`}
+                    description={event.description.substring(0, 100) + "..."}
+                    date={`March ${15 + (index % 3)}th`}
+                    prize={`₹${(index + 1) * 5000}`}
+                    delay={index * 0.05}
+                    image={event.image}
+                  />
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
